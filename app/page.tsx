@@ -1,26 +1,35 @@
-// app/page.tsx
-import { db } from "@/db";              // ← השאר בדיוק את ה-import שהיה לך קודם
-import { lessons } from "@/db/schema";  //   (אם היה relative כמו "../db", תשאיר relative)
+import { db } from "@/db";
+import { lessons } from "@/db/schema";
+import { Tutor } from "./tutor";
+import styles from "./page.module.css";
+import { LessonForm } from "./lesson-form";
 
 export default async function Home() {
   const allLessons = await db.select().from(lessons);
 
   return (
-    <main style={{ padding: "2rem", maxWidth: 640, margin: "0 auto" }}>
-      <h1>Course Lessons</h1>
+    <main className={styles.main}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Course Lessons</h1>
+        <p className={styles.tagline}>Add lessons, then ask the tutor about them.</p>
+      </header>
+
+      <LessonForm />
 
       {allLessons.length === 0 ? (
-        <p>No lessons yet.</p>
+        <p className={styles.empty}>No lessons yet. Add your first one above.</p>
       ) : (
-        <ul>
+        <ul className={styles.list}>
           {allLessons.map((lesson) => (
-            <li key={lesson.id}>
-              <strong>{lesson.title}</strong>
-              <p>{lesson.content}</p>
+            <li key={lesson.id} className={styles.card}>
+              <h3 className={styles.cardTitle}>{lesson.title}</h3>
+              <p className={styles.cardBody}>{lesson.content}</p>
             </li>
           ))}
         </ul>
       )}
+
+      <Tutor />
     </main>
   );
 }
