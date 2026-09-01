@@ -5,7 +5,7 @@ import { useActionState } from "react";
 import { updateLesson, type LessonFormState } from "./actions";
 import { DeleteButton } from "./delete-button";
 import styles from "./page.module.css";
-import { LessonFields } from "./lesson-fields";
+import { LessonForm } from "./lesson-form";
 
 const initialState: LessonFormState = {};
 
@@ -26,7 +26,7 @@ export function LessonCard({ lesson }: { lesson: Lesson }) {
     );
     if (isEditing) {
         return (
-            <LessonFields
+            <LessonForm
             formAction={formAction}
             state={state}
             pending={pending}

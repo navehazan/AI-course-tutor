@@ -1,46 +1,57 @@
 "use client";
 
-import { useState } from "react";
-import { useActionState } from "react";
-import { createLesson, type LessonFormState } from "./actions";
+import type { LessonFormState } from "./actions";
 import styles from "./page.module.css";
-import { LessonFields } from "./lesson-fields";
 
-const initialState: LessonFormState = {};
+type Props = {
+  formAction: (formData: FormData) => void;
+  state: LessonFormState;
+  pending: boolean;
+  defaultTitle?: string;
+  defaultContent?: string;
+  lessonId?: number;         // רק בעריכה
+  submitLabel: string;       // "Add lesson" / "Save"
+  onCancel: () => void;
+};
 
-export function LessonForm() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [state, formAction, pending] = useActionState(
-    async (prevState: LessonFormState, formData: FormData) => {
-      const result = await createLesson(prevState, formData);
-      if (result.success) {
-        setIsOpen(false);
-      }
-      return result;
-    },
-    initialState
+export function LessonForm({
+  formAction, state, pending,
+  defaultTitle = "", defaultContent = "",
+  lessonId, submitLabel, onCancel,
+}: Props) {
+  return (
+    <form action={formAction} className={styles.editForm}>
+      {lessonId != null && <input type="hidden" name="id" value={lessonId} />}
+
+      <input
+        name="title"
+        placeholder="Lesson title"
+        defaultValue={defaultTitle}
+        className={styles.field}
+      />
+      {state.errors?.title && (
+        <p className={styles.error}>{state.errors.title[0]}</p>
+      )}
+
+      <textarea
+        name="content"
+        placeholder="Lesson content"
+        defaultValue={defaultContent}
+        rows={4}
+        className={styles.field}
+      />
+      {state.errors?.content && (
+        <p className={styles.error}>{state.errors.content[0]}</p>
+      )}
+
+      <div className={styles.cardActions}>
+        <button type="submit" className={`${styles.cardButton} ${styles.addButton}`} disabled={pending}>
+          {pending ? "…" : submitLabel}
+        </button>
+        <button type="button" className={`${styles.cardButton} ${styles.deleteButton}`} onClick={onCancel}>
+          Cancel
+        </button>
+      </div>
+    </form>
   );
-
-  // סגור → רק כפתור
-  if (!isOpen) {
-    return (
-      <button
-        type="button"
-        className={styles.openFormButton}
-        onClick={() => setIsOpen(true)}
-      >
-        + Add lesson
-      </button>
-    );
-  }
-
-  // פתוח → הטופס
-  return <LessonFields
-    formAction={formAction}
-    state={state}
-    pending={pending}
-    submitLabel="Add lesson"
-    onCancel={() => setIsOpen(false)}
-  />
-  
 }

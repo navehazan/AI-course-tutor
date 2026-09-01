@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { lessons } from "@/db/schema";
 import { Tutor } from "./tutor";
 import styles from "./page.module.css";
-import { LessonForm } from "./lesson-form";
+import { LessonCreate } from "./lesson-create";
 
 import { LessonCard } from "./lesson-card";
 
@@ -16,7 +16,7 @@ export default async function Home() {
         <p className={styles.tagline}>Add lessons, then ask the tutor about them.</p>
       </header>
 
-      <LessonForm />
+      <LessonCreate />
 
       {allLessons.length === 0 ? (
         <p className={styles.empty}>No lessons yet. Add your first one above.</p>
