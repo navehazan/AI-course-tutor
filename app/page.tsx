@@ -3,7 +3,8 @@ import { lessons } from "@/db/schema";
 import { Tutor } from "./tutor";
 import styles from "./page.module.css";
 import { LessonForm } from "./lesson-form";
-import { DeleteButton } from "./delete-button";
+
+import { LessonCard } from "./lesson-card";
 
 export default async function Home() {
   const allLessons = await db.select().from(lessons);
@@ -22,11 +23,7 @@ export default async function Home() {
       ) : (
         <ul className={styles.list}>
           {allLessons.map((lesson) => (
-            <li key={lesson.id} className={styles.card}>
-              <h3 className={styles.cardTitle}>{lesson.title}</h3>
-              <p className={styles.cardBody}>{lesson.content}</p>
-              <DeleteButton id={lesson.id} />
-            </li>
+    <LessonCard key={lesson.id} lesson={lesson} />
           ))}
         </ul>
       )}
