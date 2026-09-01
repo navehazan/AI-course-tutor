@@ -10,6 +10,7 @@
 !.yarn/releases
 !.yarn/versions
 .prettierrc
+.vscode/
 # testing
 /coverage
 
