@@ -12,12 +12,14 @@ type Props = {
   lessonId?: number;         // רק בעריכה
   submitLabel: string;       // "Add lesson" / "Save"
   onCancel: () => void;
+  showErrors: boolean;
 };
 
 export function LessonForm({
   formAction, state, pending,
   defaultTitle = "", defaultContent = "",
   lessonId, submitLabel, onCancel,
+  showErrors,
 }: Props) {
   return (
     <form action={formAction} className={styles.editForm}>
@@ -29,7 +31,7 @@ export function LessonForm({
         defaultValue={defaultTitle}
         className={styles.field}
       />
-      {state.errors?.title && (
+      {state.errors?.title && showErrors && (
         <p className={styles.error}>{state.errors.title[0]}</p>
       )}
 
@@ -40,7 +42,7 @@ export function LessonForm({
         rows={4}
         className={styles.field}
       />
-      {state.errors?.content && (
+      {state.errors?.content && showErrors && (
         <p className={styles.error}>{state.errors.content[0]}</p>
       )}
 

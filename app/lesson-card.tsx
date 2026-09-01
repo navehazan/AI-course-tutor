@@ -13,12 +13,15 @@ type Lesson = { id: number; title: string; content: string };
 
 export function LessonCard({ lesson }: { lesson: Lesson }) {
     const [isEditing, setIsEditing] = useState(false);
-
+    const [showErrors, setShowErrors] = useState(false);
     const [state, formAction, pending] = useActionState(
       async (prevState: LessonFormState, formData: FormData) => {
         const result = await updateLesson(prevState, formData);   
         if (result.success) {
           setIsEditing(false);                                     
+        }
+        else {
+          setShowErrors(true);
         }
         return result;                                             
       },
@@ -35,6 +38,7 @@ export function LessonCard({ lesson }: { lesson: Lesson }) {
             lessonId={lesson.id}
             submitLabel="Save"
             onCancel={() => setIsEditing(false)}
+            showErrors={showErrors}
           />
         );
     }
@@ -50,7 +54,7 @@ export function LessonCard({ lesson }: { lesson: Lesson }) {
       <button
         type="button"
         className={`${styles.cardButton} ${styles.addButton}` }
-        onClick={() => setIsEditing(true)}
+        onClick={() => {setIsEditing(true); setShowErrors(false);}}
       >
         Edit
       </button>

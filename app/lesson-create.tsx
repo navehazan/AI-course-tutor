@@ -10,11 +10,15 @@ const initialState: LessonFormState = {};
 
 export function LessonCreate() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showErrors, setShowErrors] = useState(false);
   const [state, formAction, pending] = useActionState(
     async (prevState: LessonFormState, formData: FormData) => {
       const result = await createLesson(prevState, formData);
       if (result.success) {
         setIsOpen(false);
+      }
+      else {
+        setShowErrors(true);
       }
       return result;
     },
@@ -37,10 +41,11 @@ export function LessonCreate() {
   // פתוח → הטופס
   return <LessonForm
     formAction={formAction}
+    showErrors={showErrors}
     state={state}
     pending={pending}
     submitLabel="Add lesson"
-    onCancel={() => setIsOpen(false)}
+    onCancel={() => {setIsOpen(false); setShowErrors(false);}}
   />
   
 }
