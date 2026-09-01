@@ -1,7 +1,7 @@
 "use client";
 
-import { deleteLesson } from "./actions";
-import styles from "./page.module.css";
+import { deleteLesson } from "../actions";
+import styles from "./lessons.module.css";
 
 export function DeleteButton({ id }: { id: number }) {
   return (

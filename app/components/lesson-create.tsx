@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useActionState } from "react";
-import { createLesson, type LessonFormState } from "./actions";
-import styles from "./page.module.css";
+import { createLesson, type LessonFormState } from "../actions";
+import styles from "./lessons.module.css";
 import { LessonForm } from "./lesson-form";
 
 const initialState: LessonFormState = {};

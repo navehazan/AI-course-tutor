@@ -1,7 +1,7 @@
 "use client";
 
-import type { LessonFormState } from "./actions";
-import styles from "./page.module.css";
+import type { LessonFormState } from "../actions";
+import styles from "./lessons.module.css";
 
 type Props = {
   formAction: (formData: FormData) => void;

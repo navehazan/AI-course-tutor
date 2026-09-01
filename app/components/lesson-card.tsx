@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useActionState } from "react";
-import { updateLesson, type LessonFormState } from "./actions";
+import { updateLesson, type LessonFormState } from "../actions";
 import { DeleteButton } from "./delete-button";
-import styles from "./page.module.css";
+import styles from "./lessons.module.css";
 import { LessonForm } from "./lesson-form";
 
 const initialState: LessonFormState = {};

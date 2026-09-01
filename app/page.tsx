@@ -1,10 +1,9 @@
 import { db } from "@/db";
 import { lessons } from "@/db/schema";
-import { Tutor } from "./tutor";
+import { Tutor } from "./components/tutor";
 import styles from "./page.module.css";
-import { LessonCreate } from "./lesson-create";
-
-import { LessonCard } from "./lesson-card";
+import { LessonCreate } from "./components/lesson-create";
+import { LessonCard } from "./components/lesson-card";
 
 export default async function Home() {
   const allLessons = await db.select().from(lessons);

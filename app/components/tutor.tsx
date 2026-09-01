@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { askTutor } from "./actions";
+import { askTutor } from "../actions";
 import styles from "./tutor.module.css";
 
 export function Tutor() {
