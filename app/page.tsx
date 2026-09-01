@@ -12,17 +12,21 @@ export default async function Home() {
     <main className={styles.main}>
       <header className={styles.header}>
         <h1 className={styles.title}>Course Lessons</h1>
-        <p className={styles.tagline}>Add lessons, then ask the tutor about them.</p>
+        <p className={styles.tagline}>
+          Add lessons, then ask the tutor about them.
+        </p>
       </header>
 
       <LessonCreate />
 
       {allLessons.length === 0 ? (
-        <p className={styles.empty}>No lessons yet. Add your first one above.</p>
+        <p className={styles.empty}>
+          No lessons yet. Add your first one above.
+        </p>
       ) : (
         <ul className={styles.list}>
           {allLessons.map((lesson) => (
-    <LessonCard key={lesson.id} lesson={lesson} />
+            <LessonCard key={lesson.id} lesson={lesson} />
           ))}
         </ul>
       )}
