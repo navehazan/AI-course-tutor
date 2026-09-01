@@ -7,7 +7,7 @@ import styles from "./page.module.css";
 const initialState: LessonFormState = {};
 
 export function LessonForm() {
-  const [state, formAction] = useActionState(createLesson, initialState);
+  const [state, formAction, pending] = useActionState(createLesson, initialState);
 
   return (
     <form action={formAction} className={styles.form}>
@@ -26,8 +26,8 @@ export function LessonForm() {
         <p className={styles.error}>{state.errors.content[0]}</p>
       )}
 
-      <button type="submit" className={styles.addButton}>
-        Add lesson
+      <button type="submit" className={styles.addButton} disabled={pending}>
+        {pending ? "Adding..." : "Add lesson"}
       </button>
     </form>
   );

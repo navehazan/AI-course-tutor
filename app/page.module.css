@@ -102,3 +102,20 @@
     font-size: 0.85rem;
     margin: -0.25rem 0 0.25rem;
   }
+  .deleteButton {
+    align-self: flex-start;
+    margin-top: 0.75rem;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.85rem;
+    color: crimson;
+    background: transparent;
+    border: 1px solid crimson;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  
+  .deleteButton:hover {
+    background: crimson;
+    color: white;
+  }

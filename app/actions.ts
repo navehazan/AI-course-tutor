@@ -6,6 +6,7 @@ import { lessons } from "@/db/schema";
 import { revalidatePath } from "next/cache";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
+import { eq } from "drizzle-orm";
 
 const lessonSchema = z.object({
   title: z.string().min(1, "Title is required").max(100, "Title is too long"),
@@ -18,6 +19,11 @@ export type LessonFormState = {
     content?: string[];
   };
 };
+
+export async function deleteLesson(id: number) {
+  await db.delete(lessons).where(eq(lessons.id, id));
+  revalidatePath("/");
+}
 
 export async function createLesson(_prevState: LessonFormState,formData: FormData): Promise<LessonFormState>  {
   const result = lessonSchema.safeParse({
@@ -46,3 +52,4 @@ export async function askTutor(question: string): Promise<string> {
   const firstBlock = message.content[0];
   return firstBlock.type === "text" ? firstBlock.text : "";
 }
+
