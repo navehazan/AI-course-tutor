@@ -1,0 +1,1 @@
+ALTER TABLE `lessons` ADD `embedding` text NOT NULL;

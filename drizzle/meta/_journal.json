@@ -15,6 +15,13 @@
       "when": 1787753805346,
       "tag": "0001_elite_microbe",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1788681104663,
+      "tag": "0002_brown_iron_patriot",
+      "breakpoints": true
     }
   ]
 }

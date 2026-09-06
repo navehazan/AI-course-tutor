@@ -7,6 +7,8 @@ import { revalidatePath } from "next/cache";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
+import { embed } from "@/lib/embeddings";   // למעלה עם שאר ה-imports
+
 
 const anthropic = new Anthropic();
 
@@ -35,16 +37,20 @@ export async function deleteLesson(id: number) {
   revalidatePath("/");
 }
 
-export async function createLesson(
-  _prevState: LessonFormState,
-  formData: FormData
-): Promise<LessonFormState> {
+export async function createLesson(_prevState: LessonFormState, formData: FormData): Promise<LessonFormState> {
   const result = validateLesson(formData);
   if (!result.success) {
     return { errors: z.flattenError(result.error).fieldErrors };
   }
 
-  await db.insert(lessons).values(result.data);
+  // ← החדש: מייצרים embedding מהתוכן
+  const vector = await embed(result.data.content);
+
+  await db.insert(lessons).values({
+    ...result.data,
+    embedding: JSON.stringify(vector),   // ← שומרים כ-JSON (מערך → מחרוזת)
+  });
+
   revalidatePath("/");
   return { success: true };
 }
