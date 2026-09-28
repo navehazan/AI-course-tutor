@@ -7,8 +7,8 @@ import { revalidatePath } from "next/cache";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { embed } from "@/lib/embeddings";   // למעלה עם שאר ה-imports
-
+import { embed } from "@/lib/embeddings"; // למעלה עם שאר ה-imports
+import { findTopLessons } from "@/lib/retrieval";
 
 const anthropic = new Anthropic();
 
@@ -37,7 +37,10 @@ export async function deleteLesson(id: number) {
   revalidatePath("/");
 }
 
-export async function createLesson(_prevState: LessonFormState, formData: FormData): Promise<LessonFormState> {
+export async function createLesson(
+  _prevState: LessonFormState,
+  formData: FormData,
+): Promise<LessonFormState> {
   const result = validateLesson(formData);
   if (!result.success) {
     return { errors: z.flattenError(result.error).fieldErrors };
@@ -48,7 +51,7 @@ export async function createLesson(_prevState: LessonFormState, formData: FormDa
 
   await db.insert(lessons).values({
     ...result.data,
-    embedding: JSON.stringify(vector),   // ← שומרים כ-JSON (מערך → מחרוזת)
+    embedding: JSON.stringify(vector), // ← שומרים כ-JSON (מערך → מחרוזת)
   });
 
   revalidatePath("/");
@@ -57,7 +60,7 @@ export async function createLesson(_prevState: LessonFormState, formData: FormDa
 
 export async function updateLesson(
   _prevState: LessonFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<LessonFormState> {
   const result = validateLesson(formData);
   if (!result.success) {
@@ -69,16 +72,39 @@ export async function updateLesson(
   revalidatePath("/");
   return { success: true };
 }
- 
 
 export async function askTutor(question: string): Promise<string> {
+  // 1. embedding לשאלה
+  const questionVector = await embed(question);
+
+  // 2. טוענים את כל השיעורים עם הוקטורים שלהם
+  const allLessons = await db.select().from(lessons);
+
+  // 3. מוצאים את 2 השיעורים הכי קרובים
+  const topLessons = findTopLessons(questionVector, allLessons, 2);
+
+  // 4. בונים את ההקשר מהשיעורים שנבחרו
+  const context = topLessons
+    .map((item) => `שיעור: ${item.lesson.title}\n${item.lesson.content}`)
+    .join("\n\n---\n\n");
+
+  // 5. שולחים ל-Claude עם הקשר + הוראה לענות רק ממנו
   const message = await anthropic.messages.create({
     model: "claude-haiku-4-5",
     max_tokens: 1024,
-    messages: [{ role: "user", content: question }],
+    messages: [
+      {
+        role: "user",
+        content: `אתה טיוטור לקורס. ענה על השאלה של הלומד רק על סמך תוכן השיעורים הבא. אם התשובה לא נמצאת בשיעורים, אמור שזה לא מופיע בחומר.
+
+תוכן השיעורים:
+${context}
+
+שאלת הלומד: ${question}`,
+      },
+    ],
   });
 
   const firstBlock = message.content[0];
   return firstBlock.type === "text" ? firstBlock.text : "";
 }
-
